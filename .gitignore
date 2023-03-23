@@ -274,3 +274,9 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+.ipynb*
+
+# executables
+scratch
+strstr
