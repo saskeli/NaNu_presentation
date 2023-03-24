@@ -25,6 +25,7 @@
 \usepackage{ulem}
 \usepackage{dirtytalk}
 \usepackage{multicol}
+\usepackage{minted}
 
 %\graphicspath{} % to set the path of figures
 
@@ -206,7 +207,7 @@ Men först, en berättelse om min forsking, som kanske skulle kunna vara sann.
 \setlength{\parskip}{\fill}
 En modern dator kan göra miljontals meningsfulla beräkningar per sekund.
 
-Men datorer är enkla. De gör \alert{exakt} vad som bes av dem. 
+Men datorer är dumma. De gör \alert{exakt} vad som bes av dem. 
 
 Även om det skulle kunna finnas bättre sätt att göra saker.
 
@@ -269,7 +270,223 @@ Tyvärr gör moderna kompilatorer det här automatiskt. (Det var inte jag som r�
 \end{frame}
 
 \begin{frame}{Nå men strängökning då?}
+\setlength{\parskip}{\fill}
 Strängsökning går ut på att hitta förekomster för en söksträng $P$ med längden $m$ ur en (ofta lång) text $T$ med längden $n$.
+
+Alternativt bara ta reda på om $P$ förekommer i $T$, eller hur många gånger $P$ förekommer i $T$.
+\end{frame}
+
+\begin{frame}[fragile]{Naiv algoritm för strängsöking}
+\setlength{\parskip}{\fill}
+En så kallad ``brute-force'' algoritm:
+
+\begin{minted}{python}
+def str_cont(T, P):
+    for i in range(len(T) - len(P)):
+        for j in range(len(P)):
+            if (T[i + j] != P[j]):
+                break
+        else:
+            return True
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Vad gör algoritmen?}
+\setlength{\parskip}{\fill}
+Sökningen sker genom att jämföra varje position inom $T$ med $P$
+
+\texttt{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}\linebreak
+{\color{green}\texttt{aaaaa}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte så vi hoppar till nästa position.}}\linebreak
+{\color{green}\texttt{~aaaaa}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte.}}\linebreak
+{\color{green}\texttt{~~aaaaa}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte.}}\linebreak
+{\color{green}\texttt{~~~aaaaa}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte.}}\linebreak
+{\color{green}\texttt{~~~~aaaaa}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte.}}\linebreak
+
+Sökningen tar i värsta fall ungefär $c \cdot n \cdot m$ sekunder (där $c$ är en liten konstant. $\sim 1 / 10000000$ i det här fallet.)
+\end{frame}
+
+\begin{frame}[fragile]{Hur snabb är ``brute force'' algoritmen?}
+\setlength{\parskip}{\fill}
+\begin{minted}{python}
+T = "a" * 100000
+P = "a" * 99 + "b"
+\end{minted}
+
+$T$ är hundratusen ``a''n och $P$ är 99 ``a'' med ett ``b'' på slutet.
+
+\begin{minted}{python}
+%%timeit
+str_cont(T, P)
+
+1.45 s ± 3.12 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+\end{minted}
+\end{frame}
+
+\begin{frame}{Vad kan vi göra i stället för ``brute-force''?}
+\vspace{-0.5cm}
+I exemplet märkte ni äventuellt att vi använder ``massor'' med resurser för att jämföra a bokstäver som alltid matchar.
+
+Då b bokstaven inte matchar ``vet'' vi ju att om fem stycken a matchade innan så matchar åtminstone fyra stycken i nästa position.
+
+Vi kan i hoppa över alla de gråa a bokstäverna som vi vet att kommer att matcha.
+
+\texttt{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}\linebreak
+{\color{green}\texttt{aaaaa}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte så vi hoppar till nästa position.}}\linebreak
+{\color{gray}\texttt{~aaaa}}{\color{green}\texttt{a}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte.}}\linebreak
+{\color{gray}\texttt{~~aaaa}}{\color{green}\texttt{a}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte.}}\linebreak
+{\color{gray}\texttt{~~~aaaa}}{\color{green}\texttt{a}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte.}}\linebreak
+{\color{gray}\texttt{~~~~aaaa}}{\color{green}\texttt{a}}{\color{red}\texttt{b}}{\color{gray}\texttt{~b matchade inte.}}\linebreak
+\end{frame}
+
+\begin{frame}[fragile]{Tyvärr(?) har smarta människor redan tidigare märkt detta.}
+\setlength{\parskip}{\fill}
+1970 hittade James Morris och Donald Knuth på en bättre lösning oberoende av varandra. År 1977 publicerade Knuth och Morris 
+tilsammans med Vaughan Pratt ett papper där en effektiv version av vad som nu kallas för \alert{KMP algoritmen}.
+
+Denna, eller någon nyare (och ännu bättre) lösning är redan för det mesta implementerad i standard bibliotek av programmeringsspråk. 
+
+\begin{minted}{shell}
+%%timeit
+hittades = P in T
+
+403 µs ± 1.86 µs per loop (mean ± std. dev. of 7 runs, 1000 loops each)
+\end{minted}
+\end{frame}
+
+\begin{frame}{Men vad om vi känner till $T$ på förhand?}
+\setlength{\parskip}{\fill}
+Hur ofta får vi egentligen bara ett $T$ och $P$ ur det blå för att genomföra en sökning?
+
+I en analog värld där $T$ skulle kunna vara en bok, skulle vi bläddra bak i boken 
+och hoppas att där finns ett index där vi kan slå upp $P$.
+
+Kan vi bygga ett index för $T$ så att vi för alla framtida sökningar snabbare kan 
+ta reda på om $P$ förekommer i $T$?
+
+\pause
+Det är klart vi kan! Annars skulle berättelsen ha ett ganska snopet slut.
+\end{frame}
+
+\begin{frame}{Burrows-Wheeler!}
+\begin{columns}[onlytextwidth,T]
+\column{\dimexpr\linewidth-50mm-5mm}
+\setlength{\parskip}{1em}
+
+\alert{Burrows-Wheeler transformen} $B$ av $T$ är en permutation av $T$ där bokstaven i position $k$ inom $B$ är 
+bokstaven före den $k$:nde slutdelen, då alla slutdelar av $T$ sorteras.
+
+Lite jobbig definition. 
+
+Om $T = $ ``abrakadabra '' så får vi
+
+$B = $ ``ard kraaaabb''.
+\column{50mm}
+\vspace{-0.5cm}
+\begin{tabular}{| c | l |}
+\hline
+B & slutdelarna \\
+\hline
+a & \\
+r & a \\
+d & abra \\
+& abrakadabra \\
+k & adabra \\
+r & akadabra \\
+a & bra \\
+a & brakadabra \\
+a & dabra \\
+a & kadabra \\
+b & ra \\
+b & rakadabra \\
+\hline
+\end{tabular}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Vad gör vi med $B$?}
+\setlength{\parskip}{\fill}
+Det visar sig att $B$ ofta är lätt att komprimera. Till exempel genom att i stället för att spara ``aaaa'' bara spara $a^4$.
+
+Då skulle vi kunna spara $B$ som $a^1r^1d^1\;^1k^1r^1a^4b^2$. Vilket kanske inte verkar så fint.
+
+Men för praktiska data sparar detta massor med utrymme.
+\end{frame}
+
+\begin{frame}[fragile]{Men varför vill vi ens ha $B$}
+\setlength{\parskip}{\fill}
+Om vi har $B$ och vet hur många av vilka bokstäver som finns i $B$, kan vi mycket snabbt räkna ut om $P$ 
+förekommer i $T$ för ett godtyckligt $P$. Vi kan även enkelt ta reda på hur många gånger $P$ förekommer i $T$.
+
+Med ``normal'' strängsöking kan vi (långsamt) räkna hur många gånger ``Einstein`` förekommer 
+i \texttt{einstein.en.txt}\footnote{\url{http://pizzachili.dcc.uchile.cl/repcorpus.html}} 
+
+\begin{minted}{shell}
+grep -o 'Einstein' einstein.en.txt | wc -l
+2475825
+real	0m1.035s
+user	0m1.004s
+sys	0m0.053s
+\end{minted}
+\end{frame}
+
+\begin{frame}[fragile]{Hur snabba är index strukturer för strängsökning?}
+Med ett \alert{Burrows-wheeler} index kan vi räkna förekomsterna aningen snabbare:
+
+\begin{minted}{shell}
+time ./counting_exp einstein.en
+pattern   count    time
+Einstein  2475825  34649
+Mean query time: 34649ns
+ with 0.018994 bits per symbol.
+
+real    0m0.006s
+user    0m0.000s
+sys     0m0.006s
+\end{minted}
+\end{frame}
+
+\begin{frame}{Ännu snabbare!?}
+\setlength{\parskip}{\fill}
+Men vad hände med att göra datorer snabbare?
+
+Nu har jag bara beskrivit helt nya sätt att göra mer eller mindre samma sak?
+
+Det visar sig att strukturen jag demonstrerade  är ``teoretiskt optimal'' för vad den är.
+
+Den tar så lite rum som möjligt och räknar förekomsterna i högst $c\cdot m$ sekunder (för någon konstant $c$).
+\end{frame}
+
+\begin{frame}{Hur gör jag datorer snabbare?}
+\setlength{\parskip}{\fill}
+Den teoretiskt optimala lösningen är inte optimal för datorn. 
+Datastrukturen är byggd på ett sätt som gör att datorn konstant måste söka saker från olika delar av 
+minnet för att göra de krävda beräkningarna.
+
+(Som att bläddra fram och tillbaka i en bok om en text, bilder och tabeller som har att göra med samma sak är på helt olika sidor.)
+
+Vi har designat en ny version av samma data struktur som går att använda för att beräkna förekomsterna i $c\cdot b \cdot m$ sekunder, 
+där $b$ kan vara till exempel 32. Om $c$ för vår struktur 32 gånger mindre än tidigare versioner, är vår datastruktur snabbare.
+\end{frame}
+
+\begin{frame}[fragile]{Hur snabb är den då?}
+\begin{minted}{shell}
+time ./count_matches -c einstein.en.runs einstein.en.patterns
+looking for patterns from einstein.en.patterns in einstein.en.runs
+Pattern   count    time
+Einstein  2475825  8305
+Mean query time: 8305 / 1 = 8305ns
+ with 0.0235753 bits per symbol
+real    0m0.003s
+user    0m0.003s
+sys     0m0.000s
+\end{minted}
+
+Det visar sig att $c$ tydligen blir över hundra gånger mindre.
+\end{frame}
+
+\begin{frame}{Jag får (hoppeligen) åka till Barcelåna!}
+\setlength{\parskip}{\fill}
+Vi har skrivit ett papper som jag hoppeligen får presentera i Juli.
 \end{frame}
 
 \section{Motivation}
@@ -424,7 +641,8 @@ enkelt leta rätt på positionen genom att söka i alla referensgenom.
 
 Problemet är att ett genom är hyfsat stort $\sim 700$ Megabit (lätt komprimerat).
 
-Om vi vill söka i $100000$ referensgenom, tar lätt komprimerade referenserna $70$ terabyte utrymme.
+Om vi vill söka i $100000$ referensgenom\footnote{\url{https://www.genomicsengland.co.uk/initiatives/100000-genomes-project}}, 
+tar lätt komprimerade referenserna $70$ terabyte utrymme.
 
 Ett effektivt komprimerat index kanske bara tar $\sim 1$ terabyte, vilket fortfarande är ganska mycket, 
 men rymms i minnet av superdatorer.
