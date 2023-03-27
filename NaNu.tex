@@ -43,7 +43,7 @@
 \title[Snabbare maskiner]{Hur kan jag göra \linebreak
 datamaskiner snabbare?}
 \subtitle{Baserat på verkliga händelser (högst 90\% fabrikation)\linebreak
-Alernativt: Snabba data strukturer för medicin och bioinformatik\footnote{Med material stulet från Travis Gagies DCC 2023 inledningsanförande}}
+Alternativt: Snabba data strukturer för medicin och bioinformatik\footnote{Med material stulet från Travis Gagies DCC 2023 inledningsanförande}}
 \date{27.3.2023, NaNu2023}%{\today}
 \institute{Avdelningen för dataveteskap, Helsingfors Universitet}
 
@@ -184,7 +184,7 @@ src=#3 % same path as in addresource!
 \section{Vem är jag?}
 \begin{frame}{Jag}
 \setlength{\parskip}{\fill}
-Doktorand i ``Compressed data structures'' gruppen, som är en del av supergruppen ``algorithmic bioinformatics''.
+Doktorand i ``Compressed Data Structures'' gruppen, som är en del av supergruppen ``Algorithmic Bioinformatics''.
 
 Borde disputera inom $\sim 1.5$ år.
 
@@ -198,9 +198,9 @@ Startade på uni hösten 2015 $\to$ magister på våren 2021.
 \section{Berättelsen}
 \begin{frame}{Berättelsen}
 \setlength{\parskip}{\fill}
-Jag återkommer till medicin, bioinformatik och mer detaljerad information om forskningsresultat om jag har tid.
+Jag återkommer till medicin, bioinformatik och lite information om forskningsresultat om jag har tid.
 
-Men först, en berättelse om min forsking, som kanske skulle kunna vara sann.
+Men först! En berättelse om min forskning, som bra nästan helt och hållet är påhitt.
 \end{frame}
 
 \begin{frame}{Datamaskiner är snabba}
@@ -220,7 +220,7 @@ Det är (inte speciellt) svårt att beräkna $70 \cdot 300$.
 
 Det är enklare att räkna $7 \cdot 3 \cdot 10 \cdot 100$. ``$21$ och tre nollor'' $= 21000$.
 
-Skulle dethär vara något som vi skulle kunna hjälpa datorer med?
+Skulle det här vara något som vi skulle kunna hjälpa datorer med?
 
 \pause
 Nej. Tyvärr är datorer bra på att multiplicera, och bryr sig inte egentligen om vilka tal som används.
@@ -235,21 +235,21 @@ Det är (inte speciellt) svårt att beräkna $1000 / 300$.
 
 Det är enklare att ta $\frac{1000 / 100}{3}$. ``Ta bort $2$ nollor och dividera med $3$'' $ = 10 / 3 = 3\frac{1}{3}$.
 
-Skulle dethär vara något som vi skulle kunna hjälpa datorer med?
+Skulle det här vara något som vi skulle kunna hjälpa datorer med?
 
 \pause
-Jo! Fast inte så som jag gjorde åvan.
+Jo! Fast inte så som jag gjorde ovan.
 \end{frame}
 
 \begin{frame}{Division}
 \setlength{\parskip}{\fill}
 Det visar sig att datorer inte är speciellt bra på att dividera. Det skulle vara bättre att multiplicera i stället.
 
-Så i stället för att göra $1000 / 300$ kan vi göra $1000 \cdot 0.0033333\ldots$.
+Så i stället för att beräkna $1000 / 300$ kan vi beräkna $1000 \cdot 0.0033333\ldots$.
 
-Eller om vi arbetar med 32-bitars heltal kan vi göra $1000 \cdot 458129845 \gg 37$ I stället.
+Eller om vi arbetar med 32-bitars heltal kan vi beräkna $1000 \cdot 458129845 \gg 37$ I stället.
 
-Altså vi sparar resultetet av $1000 \cdot 458129845$ som ett 64-bitars heltal och skiftar sedan resultatet till höger med $37$ bitar.
+Alltså vi sparar resultatet av $1000 \cdot 458129845$ som ett 64-bitars heltal och skiftar sedan resultatet till höger med $37$ bitar.
 \end{frame}
 
 \begin{frame}[fragile]{Division}
@@ -266,7 +266,7 @@ $\cdot$ & \texttt{00000000000000000000000000000000000110110100111010000001101101
 $=$ & \texttt{000000000000000000000}{\em\texttt{100001}}\texttt{0101010101010101010101010111001010000}
 \end{tabular}
 
-Tyvärr gör moderna kompilatorer det här automatiskt. (Det var inte jag som räknade ut lösningen på förra sidan.)
+Tyvärr gör moderna kompilatorer det här automatiskt. (Det var inte jag som listade ut lösningen på förra sidan.)
 \end{frame}
 
 \begin{frame}{Nå men strängökning då?}
@@ -324,7 +324,7 @@ str_cont(T, P)
 
 \begin{frame}{Vad kan vi göra i stället för ``brute-force''?}
 \vspace{-0.5cm}
-I exemplet märkte ni äventuellt att vi använder ``massor'' med resurser för att jämföra a bokstäver som alltid matchar.
+I exemplet märkte ni eventuellt att vi använder ``massor'' med resurser för att jämföra a bokstäver som alltid matchar.
 
 Då b bokstaven inte matchar ``vet'' vi ju att om fem stycken a matchade innan så matchar åtminstone fyra stycken i nästa position.
 
@@ -343,7 +343,7 @@ Vi kan i hoppa över alla de gråa a bokstäverna som vi vet att kommer att matc
 1970 hittade James Morris och Donald Knuth på en bättre lösning oberoende av varandra. År 1977 publicerade Knuth och Morris 
 tilsammans med Vaughan Pratt ett papper där en effektiv version av vad som nu kallas för \alert{KMP algoritmen}.
 
-Denna, eller någon nyare (och ännu bättre) lösning är redan för det mesta implementerad i standard bibliotek av programmeringsspråk. 
+Denna, eller någon nyare (och ännu bättre) lösning är redan för det mesta implementerad i standardbibliotek av programmeringsspråk. 
 
 \begin{minted}{shell}
 %%timeit
@@ -417,7 +417,7 @@ Men för praktiska data sparar detta massor med utrymme.
 Om vi har $B$ och vet hur många av vilka bokstäver som finns i $B$, kan vi mycket snabbt räkna ut om $P$ 
 förekommer i $T$ för ett godtyckligt $P$. Vi kan även enkelt ta reda på hur många gånger $P$ förekommer i $T$.
 
-Med ``normal'' strängsöking kan vi (långsamt) räkna hur många gånger ``Einstein`` förekommer 
+Med ``normal'' strängsökning kan vi (långsamt) räkna hur många gånger ``Einstein`` förekommer 
 i \texttt{einstein.en.txt}\footnote{\url{http://pizzachili.dcc.uchile.cl/repcorpus.html}} 
 
 \begin{minted}{shell}
@@ -496,7 +496,7 @@ Då en människas genom sekvenseras, görs det i allmänhet med hjälp av ett re
 
 En sekvenseringsmaskin läser in små snuttar av en ny människas dna.
 
-Rätt plats för snuttarna söks genom att gämföra till referensen.
+Rätt plats för snuttarna söks genom att jämföra till referensen.
 
 \begin{center}
 \tt \begin{tabular}{r|ccccccc}
@@ -517,13 +517,13 @@ Men om den nya individen har små mutationer som inte kommer överens med refere
 
 \begin{center}
 \tt \begin{tabular}{r|cccccccc}
-\sf reference & G & A & T & T & A & C & A & T\\
+\sf referens & G & A & T & T & A & C & A & T\\
 \hline
-\sf read 1    & G & A & T & - & A\\
-\sf read 2    &   & \textcolor{gray}{A} & \textcolor{gray}{-} & \textcolor{gray}{T} & \textcolor{gray}{A} & \textcolor{gray}{G}\\
-\sf read 3    &   &   &   &   & \textcolor{gray}{A} & \textcolor{gray}{G} & \textcolor{gray}{A} & \textcolor{gray}{T}\\
+\sf snutt 1    & G & A & T & - & A\\
+\sf snutt 2    &   & \textcolor{gray}{A} & \textcolor{gray}{-} & \textcolor{gray}{T} & \textcolor{gray}{A} & \textcolor{gray}{G}\\
+\sf snutt 3    &   &   &   &   & \textcolor{gray}{A} & \textcolor{gray}{G} & \textcolor{gray}{A} & \textcolor{gray}{T}\\
 \hline
-\sf output    & G & A & T & - & A & C & A & T
+\sf resultat    & G & A & T & - & A & C & A & T
 \end{tabular}
 \end{center}
 
@@ -572,7 +572,7 @@ shared path. That will enable researchers and doctors to map short reads to the 
 \end{frame}
 
 \begin{frame}{Pangenom graf}
-Flere referensgenom:
+Flera referensgenom:
 \begin{itemize}
 \item {\tt GATTACAT}
 \item {\tt AGATACAT}
@@ -612,7 +612,7 @@ Ser ut som om ``ATAG'' skulle vara en känd delsekvens
 \end{frame}
 
 \begin{frame}{Pangenom graf}
-Änne flere referensgenom:
+Änne flera referensgenom:
 \vspace{-0.3cm}\begin{multicols}{2}
 \begin{itemize}
 \item {\tt GATTACAT}
@@ -645,7 +645,7 @@ Om vi vill söka i $100000$ referensgenom\footnote{\url{https://www.genomicsengl
 tar lätt komprimerade referenserna $70$ terabyte utrymme.
 
 Ett effektivt komprimerat index kanske bara tar $\sim 1$ terabyte, vilket fortfarande är ganska mycket, 
-men rymms i minnet av superdatorer.
+men ryms i minnet av superdatorer.
 \end{frame}
 
 \section{Resultat}
